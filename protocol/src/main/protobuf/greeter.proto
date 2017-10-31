@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+import "google/protobuf/wrappers.proto";
+import "scalapb/scalapb.proto";
+
+package io.ontherocks.advancedgrpc.protocol;
+
+/*
+ * Returns a greeting for the given person name.
+ */
+service Greeter {
+  rpc SayHello(ToBeGreeted) returns (Greeting) {}
+}
+
+message ToBeGreeted {
+  google.protobuf.StringValue person = 1;
+}
+
+message Greeting {
+  string message = 1;
+}
