@@ -6,6 +6,7 @@ lazy val `advanced-grpc-scala-client` =
   project
       .in(file("client"))
       .enablePlugins(AutomateHeaderPlugin, GitVersioning)
+      .dependsOn(`advanced-grpc-scala-protocol`)
       .settings(settings)
       .settings(
         libraryDependencies ++= Seq(
@@ -34,6 +35,7 @@ lazy val `advanced-grpc-scala-service` =
   project
       .in(file("service"))
       .enablePlugins(AutomateHeaderPlugin, GitVersioning)
+      .dependsOn(`advanced-grpc-scala-protocol`)
       .settings(settings)
       .settings(
         libraryDependencies ++= Seq(
