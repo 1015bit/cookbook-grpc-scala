@@ -51,7 +51,7 @@ class GreeterClient(channel: ManagedChannel) {
 
   def greet(personName: String): Task[String] =
     Task.deferFutureAction { implicit scheduler =>
-      stub.sayHello(ToBeGreeted(Some("Bob"))).map(_.message)
+      stub.sayHello(ToBeGreeted(Some(personName))).map(_.message)
     }
 
 }
