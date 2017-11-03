@@ -14,23 +14,14 @@
  * limitations under the License.
  */
 
-package io.ontherocks.advancedgrpc.service
+package io.ontherocks.advancedgrpc.service.greeter
 
-import io.ontherocks.advancedgrpc.protocol.greeter.GreeterGrpc.Greeter
-import io.ontherocks.advancedgrpc.protocol.greeter.{ GreeterGrpc, Greeting, ToBeGreeted }
+import io.ontherocks.advancedgrpc.protocol.greeter.GreeterGrpc
+import io.ontherocks.advancedgrpc.service.{ DemoServer, ServiceConfiguration }
 import monix.execution.Scheduler.Implicits.{ global => scheduler }
 import pureconfig.error.ConfigReaderFailures
 
-import scala.concurrent.Future
-
 object GreeterServer extends DemoServer {
-
-  class GreeterService extends Greeter {
-    def sayHello(request: ToBeGreeted): Future[Greeting] = {
-      val person = request.person.getOrElse("anonymous")
-      Future.successful(Greeting(s"Hello $person!"))
-    }
-  }
 
   def main(args: Array[String]): Unit = {
     def handleConfigErrors(f: ConfigReaderFailures): Unit =
