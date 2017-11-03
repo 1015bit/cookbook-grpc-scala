@@ -19,6 +19,7 @@ package io.ontherocks.advancedgrpc.client
 import io.grpc.ManagedChannel
 import io.ontherocks.advancedgrpc.protocol.greeter.{ GreeterGrpc, ToBeGreeted }
 import monix.eval.Task
+import pureconfig.error.ConfigReaderFailures
 
 import scala.io.StdIn
 import scala.util.{ Failure, Success }
@@ -26,21 +27,30 @@ import scala.util.{ Failure, Success }
 object GreeterClient extends DemoClient {
 
   def main(args: Array[String]): Unit = {
-    val client     = new GreeterClient(defaultChannel)
-    val personName = "Bob"
-    println(s"Calling `sayHello()` with name $personName...")
-    import monix.execution.Scheduler.Implicits.global
-    client
-      .greet(personName)
-      .runAsync
-      .onComplete {
-        case Success(greeting) => println(s"Received greeting: $greeting")
-        case Failure(t)        => println(s"Something went wrong: $t")
-      }
+    def handleConfigErrors(f: ConfigReaderFailures): Unit = {
+      println("Errors while loading config:")
+      f.toList.foreach(println)
+    }
 
-    println("Greeter client started. Press ENTER to exit..")
-    StdIn.readLine()
-    ()
+    def runDemo(config: ClientConfiguration): Unit = {
+      val client     = new GreeterClient(channel(config))
+      val personName = "Bob"
+      println(s"Calling `sayHello()` with name $personName...")
+      import monix.execution.Scheduler.Implicits.global
+      client
+        .greet(personName)
+        .runAsync
+        .onComplete {
+          case Success(greeting) => println(s"Received greeting: $greeting")
+          case Failure(t)        => println(s"Something went wrong: $t")
+        }
+
+      println("Greeter client demo started. Press ENTER to exit..")
+      StdIn.readLine()
+      ()
+    }
+
+    ClientConfiguration.load.fold(handleConfigErrors, runDemo)
   }
 
 }
@@ -51,7 +61,7 @@ class GreeterClient(channel: ManagedChannel) {
 
   def greet(personName: String): Task[String] =
     Task.deferFutureAction { implicit scheduler =>
-      stub.sayHello(ToBeGreeted(Some("Bob"))).map(_.message)
+      stub.sayHello(ToBeGreeted(Some(personName))).map(_.message)
     }
 
 }

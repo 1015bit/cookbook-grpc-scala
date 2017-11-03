@@ -16,31 +16,12 @@
 
 package io.ontherocks.advancedgrpc.service
 
-import io.grpc.{ Server, ServerBuilder, ServerServiceDefinition }
+import pureconfig._
+import pureconfig.error.ConfigReaderFailures
 
-import scala.io.StdIn
-
-trait DemoServer {
-
-  def start(config: ServiceConfiguration, ssd: ServerServiceDefinition): Server = {
-    val server = ServerBuilder
-      .forPort(config.port)
-      .addService(ssd)
-      .build
-      .start
-
-    // make sure our server is stopped when jvm is shut down
-    Runtime.getRuntime.addShutdownHook(new Thread() {
-      override def run(): Unit = {
-        server.shutdown()
-        ()
-      }
-    })
-
-    println("Demo server started. Press ENTER to shutdown...")
-    StdIn.readLine()
-
-    server.shutdown()
-  }
-
+object ServiceConfiguration {
+  def load: Either[ConfigReaderFailures, ServiceConfiguration] =
+    loadConfig[ServiceConfiguration]("io.ontherocks.advancedgrpc.service")
 }
+
+case class ServiceConfiguration(port: Int)

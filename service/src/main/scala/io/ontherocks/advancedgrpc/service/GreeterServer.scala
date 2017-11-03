@@ -18,8 +18,8 @@ package io.ontherocks.advancedgrpc.service
 
 import io.ontherocks.advancedgrpc.protocol.greeter.GreeterGrpc.Greeter
 import io.ontherocks.advancedgrpc.protocol.greeter.{ GreeterGrpc, Greeting, ToBeGreeted }
-
 import monix.execution.Scheduler.Implicits.{ global => scheduler }
+import pureconfig.error.ConfigReaderFailures
 
 import scala.concurrent.Future
 
@@ -33,9 +33,21 @@ object GreeterServer extends DemoServer {
   }
 
   def main(args: Array[String]): Unit = {
-    val ssd = GreeterGrpc.bindService(new GreeterService(), scheduler)
-    runServer(ssd)
-    ()
+    def handleConfigErrors(f: ConfigReaderFailures): Unit = {
+      println("Errors while loading config:")
+      f.toList.foreach(println)
+    }
+
+    def runServer(config: ServiceConfiguration): Unit = {
+      val ssd = GreeterGrpc.bindService(new GreeterService(), scheduler)
+      start(config, ssd)
+      ()
+    }
+
+    ServiceConfiguration.load.fold(
+      handleConfigErrors,
+      runServer
+    )
   }
 
 }
