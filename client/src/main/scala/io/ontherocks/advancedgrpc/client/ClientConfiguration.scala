@@ -16,14 +16,12 @@
 
 package io.ontherocks.advancedgrpc.client
 
-import io.grpc.ManagedChannelBuilder
+import pureconfig._
+import pureconfig.error.ConfigReaderFailures
 
-trait DemoClient {
-
-  def channel(config: ClientConfiguration) =
-    ManagedChannelBuilder
-      .forAddress(config.host, config.port)
-      .usePlaintext(true) // don't use encryption (for demo purposes)
-      .build
-
+object ClientConfiguration {
+  def load: Either[ConfigReaderFailures, ClientConfiguration] =
+    loadConfig[ClientConfiguration]("io.ontherocks.advancedgrpc.client")
 }
+
+case class ClientConfiguration(host: String, port: Int)
