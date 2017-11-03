@@ -10,6 +10,8 @@ lazy val `advanced-grpc-scala-client` =
       .settings(settings)
       .settings(
         libraryDependencies ++= Seq(
+          library.cats,
+          library.monix,
           library.scalaCheck % Test,
           library.scalaTest  % Test
         )
@@ -39,6 +41,8 @@ lazy val `advanced-grpc-scala-service` =
       .settings(settings)
       .settings(
         libraryDependencies ++= Seq(
+          library.cats,
+          library.monix,
           library.scalaCheck % Test,
           library.scalaTest  % Test
         )
@@ -61,10 +65,14 @@ import com.trueaccord.scalapb.compiler.{ Version => VersionPb }
 lazy val library =
   new {
     object Version {
+      val cats       = "1.0.0-RC1"
+      val monix      = "2.3.0"
       val scalaCheck = "1.13.5"
       val scalaTest  = "3.0.4"
     }
+    val cats               = "org.typelevel"           %% "cats-core"             % Version.cats
     val grpcNetty          = "io.grpc"                  % "grpc-netty"            % VersionPb.grpcJavaVersion
+    val monix              = "io.monix"                %% "monix"                 % Version.monix
     val scalaCheck         = "org.scalacheck"          %% "scalacheck"            % Version.scalaCheck
     val scalaPbRuntime     = "com.trueaccord.scalapb"  %% "scalapb-runtime"       % VersionPb.scalapbVersion % "protobuf"
     val scalaPbRuntimeGrpc = "com.trueaccord.scalapb"  %% "scalapb-runtime-grpc"  % VersionPb.scalapbVersion
@@ -94,8 +102,10 @@ lazy val commonSettings =
       "-language:_",
       "-target:jvm-1.8",
       "-Xfatal-warnings",
+      "-Ypartial-unification",
       "-Ywarn-dead-code",
       "-Ywarn-numeric-widen",
+      "-Ywarn-value-discard",
       "-Ywarn-unused-import",
       "-encoding", "UTF-8"
     ),
