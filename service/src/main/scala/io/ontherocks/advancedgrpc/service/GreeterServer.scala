@@ -33,10 +33,8 @@ object GreeterServer extends DemoServer {
   }
 
   def main(args: Array[String]): Unit = {
-    def handleConfigErrors(f: ConfigReaderFailures): Unit = {
-      println("Errors while loading config:")
-      f.toList.foreach(println)
-    }
+    def handleConfigErrors(f: ConfigReaderFailures): Unit =
+      logger.warn(s"Errors while loading config: ${f.toList}")
 
     def runServer(config: ServiceConfiguration): Unit = {
       val ssd = GreeterGrpc.bindService(new GreeterService(), scheduler)

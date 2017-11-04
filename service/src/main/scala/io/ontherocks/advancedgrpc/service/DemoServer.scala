@@ -17,12 +17,15 @@
 package io.ontherocks.advancedgrpc.service
 
 import io.grpc.{ Server, ServerBuilder, ServerServiceDefinition }
+import org.apache.logging.log4j.scala.Logging
 
 import scala.io.StdIn
 
-trait DemoServer {
+trait DemoServer extends Logging {
 
   def start(config: ServiceConfiguration, ssd: ServerServiceDefinition): Server = {
+    logger.info(s"Starting demo server on port ${config.port}")
+
     val server = ServerBuilder
       .forPort(config.port)
       .addService(ssd)
@@ -37,8 +40,7 @@ trait DemoServer {
       }
     })
 
-    println("Demo server started. Press ENTER to shutdown...")
-    StdIn.readLine()
+    StdIn.readLine("Demo server started. Press ENTER to shutdown...\n")
 
     server.shutdown()
   }
