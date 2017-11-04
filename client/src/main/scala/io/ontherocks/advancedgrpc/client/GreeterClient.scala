@@ -19,34 +19,32 @@ package io.ontherocks.advancedgrpc.client
 import io.grpc.ManagedChannel
 import io.ontherocks.advancedgrpc.protocol.greeter.{ GreeterGrpc, ToBeGreeted }
 import monix.eval.Task
+import org.apache.logging.log4j.scala.Logging
 import pureconfig.error.ConfigReaderFailures
 
 import scala.io.StdIn
 import scala.util.{ Failure, Success }
 
-object GreeterClient extends DemoClient {
+object GreeterClient extends DemoClient with Logging {
 
   def main(args: Array[String]): Unit = {
-    def handleConfigErrors(f: ConfigReaderFailures): Unit = {
-      println("Errors while loading config:")
-      f.toList.foreach(println)
-    }
+    def handleConfigErrors(f: ConfigReaderFailures): Unit =
+      logger.warn(s"Errors while loading config: ${f.toList}")
 
     def runDemo(config: ClientConfiguration): Unit = {
       val client     = new GreeterClient(channel(config))
       val personName = "Bob"
-      println(s"Calling `sayHello()` with name $personName...")
+      logger.info(s"Calling `sayHello()` with name $personName...")
       import monix.execution.Scheduler.Implicits.global
       client
         .greet(personName)
         .runAsync
         .onComplete {
-          case Success(greeting) => println(s"Received greeting: $greeting")
-          case Failure(t)        => println(s"Something went wrong: $t")
+          case Success(greeting) => logger.info(s"Received greeting: $greeting")
+          case Failure(t)        => logger.warn(s"Something went wrong: $t")
         }
 
-      println("Greeter client demo started. Press ENTER to exit..")
-      StdIn.readLine()
+      StdIn.readLine("Greeter client demo started. Press ENTER to exit..\n")
       ()
     }
 
