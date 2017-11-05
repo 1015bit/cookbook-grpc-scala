@@ -18,7 +18,7 @@ package io.ontherocks.advancedgrpc.client
 
 import io.grpc.ManagedChannelBuilder
 
-trait DemoClient {
+trait DemoApp {
 
   def channel(config: ClientConfiguration) =
     ManagedChannelBuilder

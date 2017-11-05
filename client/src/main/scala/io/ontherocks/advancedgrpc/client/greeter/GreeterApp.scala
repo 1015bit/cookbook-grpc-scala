@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package io.ontherocks.advancedgrpc.client
+package io.ontherocks.advancedgrpc.client.greeter
 
-import io.grpc.ManagedChannel
-import io.ontherocks.advancedgrpc.protocol.greeter.{ GreeterGrpc, ToBeGreeted }
-import monix.eval.Task
+import io.ontherocks.advancedgrpc.client.{ ClientConfiguration, DemoApp }
 import org.apache.logging.log4j.scala.Logging
 import pureconfig.error.ConfigReaderFailures
 
 import scala.io.StdIn
 import scala.util.{ Failure, Success }
 
-object GreeterClient extends DemoClient with Logging {
+object GreeterApp extends DemoApp with Logging {
 
   def main(args: Array[String]): Unit = {
     def handleConfigErrors(f: ConfigReaderFailures): Unit =
@@ -50,16 +48,5 @@ object GreeterClient extends DemoClient with Logging {
 
     ClientConfiguration.load.fold(handleConfigErrors, runDemo)
   }
-
-}
-
-class GreeterClient(channel: ManagedChannel) {
-
-  val stub = GreeterGrpc.stub(channel)
-
-  def greet(personName: String): Task[String] =
-    Task.deferFutureAction { implicit scheduler =>
-      stub.sayHello(ToBeGreeted(Some(personName))).map(_.message)
-    }
 
 }

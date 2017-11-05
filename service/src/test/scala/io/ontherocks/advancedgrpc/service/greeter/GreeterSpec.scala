@@ -17,7 +17,7 @@
 package io.ontherocks.advancedgrpc.service.greeter
 
 import io.ontherocks.advancedgrpc.protocol.greeter.ToBeGreeted
-import org.scalatest.{AsyncWordSpec, Matchers}
+import org.scalatest.{ AsyncWordSpec, Matchers }
 
 class GreeterSpec extends AsyncWordSpec with Matchers {
 

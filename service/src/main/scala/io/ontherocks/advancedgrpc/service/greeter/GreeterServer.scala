@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-package io.ontherocks.advancedgrpc.service.greeter
+package io.ontherocks.advancedgrpc.service
+package greeter
 
 import io.ontherocks.advancedgrpc.protocol.greeter.GreeterGrpc
 import io.ontherocks.advancedgrpc.service.{ DemoServer, ServiceConfiguration }

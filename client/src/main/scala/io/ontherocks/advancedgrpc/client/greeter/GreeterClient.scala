@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
-package io.ontherocks.advancedgrpc.service
-package greeter
+package io.ontherocks.advancedgrpc.client.greeter
 
-import io.ontherocks.advancedgrpc.protocol.greeter.GreeterGrpc.Greeter
-import io.ontherocks.advancedgrpc.protocol.greeter.{ Greeting, ToBeGreeted }
+import io.grpc.ManagedChannel
+import io.ontherocks.advancedgrpc.protocol.greeter.{ GreeterGrpc, ToBeGreeted }
+import monix.eval.Task
 
-import scala.concurrent.Future
+class GreeterClient(channel: ManagedChannel) {
 
-class GreeterService extends Greeter {
-  def sayHello(request: ToBeGreeted): Future[Greeting] = {
-    val person = request.person.getOrElse("anonymous")
-    Future.successful(Greeting(s"Hello $person!"))
-  }
+  val stub = GreeterGrpc.stub(channel)
+
+  def greet(personName: String): Task[String] =
+    Task.deferFutureAction { implicit scheduler =>
+      stub.sayHello(ToBeGreeted(Some(personName))).map(_.message)
+    }
+
 }
