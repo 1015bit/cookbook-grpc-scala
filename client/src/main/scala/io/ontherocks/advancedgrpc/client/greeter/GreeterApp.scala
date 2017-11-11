@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package io.ontherocks.advancedgrpc.client.greeter
+package io.ontherocks.advancedgrpc.client
+package greeter
 
-import io.ontherocks.advancedgrpc.client.{ ClientConfiguration, DemoApp }
 import org.apache.logging.log4j.scala.Logging
 import pureconfig.error.ConfigReaderFailures
 

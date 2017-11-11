@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-package io.ontherocks.advancedgrpc.client
+package io.ontherocks.advancedgrpc
+package client
 
 import io.grpc.inprocess.{ InProcessChannelBuilder, InProcessServerBuilder }
 import io.grpc.{ ManagedChannel, Server, ServerServiceDefinition }
@@ -23,23 +24,33 @@ import org.scalatest.Assertion
 import scala.concurrent.Future
 import scala.util.Try
 
+/**
+  * Makes it easy to start an in-process server for testing purposes.
+  */
 trait InProcessSpec {
 
-  protected def ssd: ServerServiceDefinition
+  implicit class EnhancedInProcessServerBuilder(builder: InProcessServerBuilder) {
+    def addServices(ssds: Seq[ServerServiceDefinition]): InProcessServerBuilder = {
+      ssds.map(builder.addService(_))
+      builder
+    }
+  }
 
-  private def startServer(ssd: ServerServiceDefinition,
-                          serverName: String = "test-server"): Either[Throwable, Server] =
-    Try(
+  protected def ssds: Seq[ServerServiceDefinition]
+
+  private def startServer(ssds: Seq[ServerServiceDefinition],
+                          serverName: String): Either[Throwable, Server] =
+    Try {
       InProcessServerBuilder
         .forName(serverName)
         .directExecutor()
-        .addService(ssd)
+        .addServices(ssds)
         .build()
         .start()
-    ).toEither
+    }.toEither
 
   private def buildChannel(
-      serverName: String = "test-server"
+      serverName: String
   ): Either[Throwable, ManagedChannel] =
     Try(
       InProcessChannelBuilder
@@ -50,23 +61,29 @@ trait InProcessSpec {
 
   protected def withInProcessServerAndChannel(
       testCode: (Server, ManagedChannel) => Future[Assertion]
-  ): Future[Assertion] = {
-    val serverE  = startServer(ssd)
-    val channelE = buildChannel()
+  ): Future[Assertion] =
+    withInProcessServerAndChannel("test-server", testCode)
 
-    val result = for {
+  protected def withInProcessServerAndChannel(
+      serverName: String,
+      testCode: (Server, ManagedChannel) => Future[Assertion]
+  ): Future[Assertion] = {
+    val serverE  = startServer(ssds, serverName)
+    val channelE = buildChannel(serverName)
+
+    val resultE = for {
       server  <- serverE
       channel <- channelE
     } yield {
       testCode(server, channel)
     }
 
-    result match {
-      case Right(assertion) => assertion
-      case Left(error) =>
-        serverE.map(_.shutdown())
-        channelE.map(_.shutdown())
-        throw error
+    serverE.map(_.shutdown())
+    channelE.map(_.shutdown())
+
+    resultE match {
+      case Right(assertionF) => assertionF
+      case Left(error)       => throw error
     }
   }
 

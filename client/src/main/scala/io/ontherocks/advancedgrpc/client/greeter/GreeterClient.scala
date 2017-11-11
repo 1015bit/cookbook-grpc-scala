@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-package io.ontherocks.advancedgrpc.client.greeter
+package io.ontherocks.advancedgrpc.client
+package greeter
 
 import io.grpc.ManagedChannel
 import io.ontherocks.advancedgrpc.protocol.greeter.{ GreeterGrpc, ToBeGreeted }

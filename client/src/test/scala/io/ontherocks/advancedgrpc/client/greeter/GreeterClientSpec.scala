@@ -16,7 +16,6 @@
 
 package io.ontherocks.advancedgrpc.client.greeter
 
-import io.grpc.ServerServiceDefinition
 import io.ontherocks.advancedgrpc.client.InProcessSpec
 import io.ontherocks.advancedgrpc.protocol.greeter.GreeterGrpc.Greeter
 import io.ontherocks.advancedgrpc.protocol.greeter.{ GreeterGrpc, Greeting, ToBeGreeted }
@@ -32,8 +31,7 @@ class GreeterClientSpec extends AsyncWordSpec with Matchers with InProcessSpec {
       Future.successful(Greeting(s"Hi ${request.person.getOrElse("")}!"))
   }
 
-  override protected def ssd: ServerServiceDefinition =
-    GreeterGrpc.bindService(new TestGreeterService(), global)
+  override protected def ssds = List(GreeterGrpc.bindService(new TestGreeterService(), global))
 
   "Greeter client" should {
     "return the greeting received from service" in withInProcessServerAndChannel {
