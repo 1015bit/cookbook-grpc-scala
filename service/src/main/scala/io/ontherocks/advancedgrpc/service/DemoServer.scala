@@ -19,30 +19,15 @@ package io.ontherocks.advancedgrpc.service
 import io.grpc.{ Server, ServerBuilder, ServerServiceDefinition }
 import org.apache.logging.log4j.scala.Logging
 
-import scala.io.StdIn
-
 trait DemoServer extends Logging {
 
   def start(config: ServiceConfiguration, ssd: ServerServiceDefinition): Server = {
     logger.info(s"Starting demo server on port ${config.port}")
-
-    val server = ServerBuilder
+    ServerBuilder
       .forPort(config.port)
       .addService(ssd)
       .build
       .start
-
-    // make sure our server is stopped when jvm is shut down
-    Runtime.getRuntime.addShutdownHook(new Thread() {
-      override def run(): Unit = {
-        server.shutdown()
-        ()
-      }
-    })
-
-    StdIn.readLine("Demo server started. Press ENTER to shutdown...\n")
-
-    server.shutdown()
   }
 
 }

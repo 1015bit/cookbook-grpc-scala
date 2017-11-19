@@ -17,7 +17,8 @@ lazy val `advanced-grpc-scala-client` =
           library.pureConfig,
           library.scalaCheck % Test,
           library.scalaTest  % Test
-        )
+        ),
+        addCommandAlias("run-greeter-client", ";project advanced-grpc-scala-client;runMain io.ontherocks.advancedgrpc.client.greeter.GreeterApp")
       )
 
 lazy val `advanced-grpc-scala-protocol` =
@@ -39,9 +40,10 @@ lazy val `advanced-grpc-scala-protocol` =
 lazy val `advanced-grpc-scala-service` =
   project
       .in(file("service"))
-      .enablePlugins(AutomateHeaderPlugin, GitVersioning)
+      .enablePlugins(AutomateHeaderPlugin, GitVersioning, JavaAppPackaging, AshScriptPlugin)
       .dependsOn(`advanced-grpc-scala-protocol`)
       .settings(settings)
+      .settings(dockerSettings)
       .settings(
         libraryDependencies ++= Seq(
           library.cats,
@@ -51,6 +53,10 @@ lazy val `advanced-grpc-scala-service` =
           library.pureConfig,
           library.scalaCheck % Test,
           library.scalaTest  % Test
+        ),
+        mainClass in Compile := Some("io.ontherocks.advancedgrpc.service.Main"),
+        version in Docker    := "0.0.1",
+        addCommandAlias("run-services", ";project advanced-grpc-scala-service;run"
         )
       )
 
@@ -125,6 +131,12 @@ lazy val commonSettings =
     unmanagedSourceDirectories.in(Compile) := Seq(scalaSource.in(Compile).value),
     unmanagedSourceDirectories.in(Test) := Seq(scalaSource.in(Test).value)
 )
+
+lazy val dockerSettings =
+  Seq(
+    dockerBaseImage    := "openjdk:8-jdk-alpine",
+    dockerUpdateLatest := true
+  )
 
 lazy val gitSettings =
   Seq(
