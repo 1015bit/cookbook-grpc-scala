@@ -20,7 +20,7 @@ import io.grpc.ManagedChannelBuilder
 
 trait DemoApp {
 
-  def channel(config: ClientConfiguration) =
+  def managedChannel(config: ClientConfiguration) =
     ManagedChannelBuilder
       .forAddress(config.host, config.port)
       .usePlaintext(true) // don't use encryption (for demo purposes)

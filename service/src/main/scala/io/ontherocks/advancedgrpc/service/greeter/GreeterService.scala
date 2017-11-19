@@ -20,11 +20,15 @@ package greeter
 import io.ontherocks.advancedgrpc.protocol.greeter.GreeterGrpc.Greeter
 import io.ontherocks.advancedgrpc.protocol.greeter.{ Greeting, ToBeGreeted }
 
+import org.apache.logging.log4j.scala.Logging
 import scala.concurrent.Future
 
-class GreeterService extends Greeter {
+class GreeterService extends Greeter with Logging {
   def sayHello(request: ToBeGreeted): Future[Greeting] = {
-    val person = request.person.getOrElse("anonymous")
-    Future.successful(Greeting(s"Hello $person!"))
+    logger.debug(s"Received request to greet person ${request.person}")
+    val person   = request.person.getOrElse("anonymous")
+    val greeting = Greeting(s"Hello $person!")
+    logger.debug(s"Returning greeting '${greeting.message}'")
+    Future.successful(greeting)
   }
 }

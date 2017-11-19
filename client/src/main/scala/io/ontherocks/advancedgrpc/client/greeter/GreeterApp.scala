@@ -17,36 +17,55 @@
 package io.ontherocks.advancedgrpc.client
 package greeter
 
+import io.grpc.ManagedChannel
+import java.util.concurrent.TimeUnit
 import org.apache.logging.log4j.scala.Logging
 import pureconfig.error.ConfigReaderFailures
 
-import scala.io.StdIn
 import scala.util.{ Failure, Success }
 
-object GreeterApp extends DemoApp with Logging {
+object GreeterApp extends App with DemoApp with Logging {
 
-  def main(args: Array[String]): Unit = {
-    def handleConfigErrors(f: ConfigReaderFailures): Unit =
-      logger.warn(s"Errors while loading config: ${f.toList}")
+  def handleConfigErrors(f: ConfigReaderFailures): Unit =
+    logger.warn(s"Errors while loading config: ${f.toList}")
 
-    def runDemo(config: ClientConfiguration): Unit = {
-      val client     = new GreeterClient(channel(config))
-      val personName = "Bob"
-      logger.info(s"Calling `sayHello()` with name $personName...")
-      import monix.execution.Scheduler.Implicits.global
-      client
-        .greet(personName)
-        .runAsync
-        .onComplete {
-          case Success(greeting) => logger.info(s"Received greeting: $greeting")
-          case Failure(t)        => logger.warn(s"Something went wrong: $t")
-        }
+  /**
+    * Cleanup resources when JVM terminates.
+    */
+  def registerShutdownHook(channel: ManagedChannel): Unit =
+    Runtime.getRuntime.addShutdownHook(new Thread() {
+      override def run(): Unit = {
+        logger.info("Shutting down channel. Bye.")
+        channel.shutdown()
+        ()
+      }
+    })
 
-      StdIn.readLine("Greeter client demo started. Press ENTER to exit..\n")
-      ()
-    }
+  def runDemo(config: ClientConfiguration): Unit = {
+    val channel    = managedChannel(config)
+    val client     = new GreeterClient(channel)
+    val personName = "Bob"
 
-    ClientConfiguration.load.fold(handleConfigErrors, runDemo)
+    logger.info("Registering shutdown hook.")
+    registerShutdownHook(channel)
+
+    logger.info(s"Calling `sayHello()` with name $personName...")
+    import monix.execution.Scheduler.Implicits.global
+    client
+      .greet(personName)
+      .runAsync
+      .onComplete {
+        case Success(greeting) =>
+          logger.info(s"Received greeting: $greeting")
+          channel.shutdown()
+        case Failure(t) =>
+          logger.warn(s"Something went wrong: $t")
+      }
+
+    channel.awaitTermination(60, TimeUnit.SECONDS)
+    ()
   }
+
+  ClientConfiguration.load.fold(handleConfigErrors, runDemo)
 
 }
