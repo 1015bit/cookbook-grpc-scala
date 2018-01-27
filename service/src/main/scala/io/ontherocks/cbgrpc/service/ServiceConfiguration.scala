@@ -14,20 +14,14 @@
  * limitations under the License.
  */
 
-package io.ontherocks.advancedgrpc.service
+package io.ontherocks.cbgrpc.service
 
-import io.grpc.{ Server, ServerBuilder, ServerServiceDefinition }
-import org.apache.logging.log4j.scala.Logging
+import pureconfig._
+import pureconfig.error.ConfigReaderFailures
 
-trait DemoServer extends Logging {
-
-  def start(config: ServiceConfiguration, ssd: ServerServiceDefinition): Server = {
-    logger.info(s"Starting demo server on port ${config.port}")
-    ServerBuilder
-      .forPort(config.port)
-      .addService(ssd)
-      .build
-      .start
-  }
-
+object ServiceConfiguration {
+  def load: Either[ConfigReaderFailures, ServiceConfiguration] =
+    loadConfig[ServiceConfiguration]("io.ontherocks.cbgrpc.service")
 }
+
+case class ServiceConfiguration(port: Int)

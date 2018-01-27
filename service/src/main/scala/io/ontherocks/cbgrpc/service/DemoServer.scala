@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package io.ontherocks.advancedgrpc.client
-package greeter
+package io.ontherocks.cbgrpc.service
 
-import io.grpc.ManagedChannel
-import io.ontherocks.advancedgrpc.protocol.greeter.{ GreeterGrpc, ToBeGreeted }
-import monix.eval.Task
+import io.grpc.{ Server, ServerBuilder, ServerServiceDefinition }
+import org.apache.logging.log4j.scala.Logging
 
-class GreeterClient(channel: ManagedChannel) {
+trait DemoServer extends Logging {
 
-  val stub = GreeterGrpc.stub(channel)
-
-  def greet(personName: String): Task[String] =
-    Task.deferFutureAction { implicit scheduler =>
-      stub.sayHello(ToBeGreeted(Some(personName))).map(_.message)
-    }
+  def start(config: ServiceConfiguration, ssd: ServerServiceDefinition): Server = {
+    logger.info(s"Starting demo server on port ${config.port}")
+    ServerBuilder
+      .forPort(config.port)
+      .addService(ssd)
+      .build
+      .start
+  }
 
 }

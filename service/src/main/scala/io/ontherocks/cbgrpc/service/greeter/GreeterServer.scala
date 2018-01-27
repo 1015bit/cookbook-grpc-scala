@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package io.ontherocks.advancedgrpc.service
+package io.ontherocks.cbgrpc.service
 package greeter
 
-import io.ontherocks.advancedgrpc.protocol.greeter.GreeterGrpc
-import io.ontherocks.advancedgrpc.service.{ DemoServer, ServiceConfiguration }
+import io.ontherocks.cbgrpc.protocol.greeter.GreeterGrpc
+import io.ontherocks.cbgrpc.service.{ DemoServer, ServiceConfiguration }
 import monix.execution.Scheduler.Implicits.{ global => scheduler }
 import pureconfig.error.ConfigReaderFailures
 

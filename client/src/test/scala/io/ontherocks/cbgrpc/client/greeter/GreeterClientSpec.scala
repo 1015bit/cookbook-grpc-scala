@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package io.ontherocks.advancedgrpc.client.greeter
+package io.ontherocks.cbgrpc.client.greeter
 
-import io.ontherocks.advancedgrpc.client.InProcessSpec
-import io.ontherocks.advancedgrpc.protocol.greeter.GreeterGrpc.Greeter
-import io.ontherocks.advancedgrpc.protocol.greeter.{ GreeterGrpc, Greeting, ToBeGreeted }
+import io.ontherocks.cbgrpc.client.InProcessSpec
+import io.ontherocks.cbgrpc.protocol.greeter.GreeterGrpc.Greeter
+import io.ontherocks.cbgrpc.protocol.greeter.{ GreeterGrpc, Greeting, ToBeGreeted }
 import monix.execution.Scheduler.Implicits.global
 import org.scalatest.{ AsyncWordSpec, Matchers }
 
