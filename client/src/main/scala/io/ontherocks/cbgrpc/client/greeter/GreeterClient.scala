@@ -14,14 +14,20 @@
  * limitations under the License.
  */
 
-package io.ontherocks.advancedgrpc.client
+package io.ontherocks.cbgrpc.client
+package greeter
 
-import pureconfig._
-import pureconfig.error.ConfigReaderFailures
+import io.grpc.ManagedChannel
+import io.ontherocks.cbgrpc.protocol.greeter.{ GreeterGrpc, ToBeGreeted }
+import monix.eval.Task
 
-object ClientConfiguration {
-  def load: Either[ConfigReaderFailures, ClientConfiguration] =
-    loadConfig[ClientConfiguration]("io.ontherocks.advancedgrpc.client")
+class GreeterClient(channel: ManagedChannel) {
+
+  val stub = GreeterGrpc.stub(channel)
+
+  def greet(personName: String): Task[String] =
+    Task.deferFutureAction { implicit scheduler =>
+      stub.sayHello(ToBeGreeted(Some(personName))).map(_.message)
+    }
+
 }
-
-case class ClientConfiguration(host: String, port: Int)

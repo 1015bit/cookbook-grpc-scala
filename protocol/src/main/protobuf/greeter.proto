@@ -3,7 +3,7 @@ syntax = "proto3";
 import "google/protobuf/wrappers.proto";
 import "scalapb/scalapb.proto";
 
-package io.ontherocks.advancedgrpc.protocol;
+package io.ontherocks.cbgrpc.protocol;
 
 /*
  * Returns a greeting for the given person name.

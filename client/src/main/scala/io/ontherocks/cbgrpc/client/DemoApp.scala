@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package io.ontherocks.advancedgrpc.service
+package io.ontherocks.cbgrpc.client
 
-import pureconfig._
-import pureconfig.error.ConfigReaderFailures
+import io.grpc.ManagedChannelBuilder
 
-object ServiceConfiguration {
-  def load: Either[ConfigReaderFailures, ServiceConfiguration] =
-    loadConfig[ServiceConfiguration]("io.ontherocks.advancedgrpc.service")
+trait DemoApp {
+
+  def managedChannel(config: ClientConfiguration) =
+    ManagedChannelBuilder
+      .forAddress(config.host, config.port)
+      .usePlaintext(true) // don't use encryption (for demo purposes)
+      .build
+
 }
-
-case class ServiceConfiguration(port: Int)

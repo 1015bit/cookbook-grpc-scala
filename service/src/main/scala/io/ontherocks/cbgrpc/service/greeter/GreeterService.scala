@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package io.ontherocks.advancedgrpc.service
+package io.ontherocks.cbgrpc.service
 package greeter
 
-import io.ontherocks.advancedgrpc.protocol.greeter.GreeterGrpc.Greeter
-import io.ontherocks.advancedgrpc.protocol.greeter.{ Greeting, ToBeGreeted }
+import io.ontherocks.cbgrpc.protocol.greeter.GreeterGrpc.Greeter
+import io.ontherocks.cbgrpc.protocol.greeter.{ Greeting, ToBeGreeted }
 
 import org.apache.logging.log4j.scala.Logging
 import scala.concurrent.Future

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.ontherocks.advancedgrpc.client
+package io.ontherocks.cbgrpc.client
 package greeter
 
 import io.grpc.ManagedChannel

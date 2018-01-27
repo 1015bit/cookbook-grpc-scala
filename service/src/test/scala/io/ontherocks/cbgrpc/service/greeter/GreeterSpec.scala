@@ -14,13 +14,23 @@
  * limitations under the License.
  */
 
-package io.ontherocks.advancedgrpc
+package io.ontherocks.cbgrpc.service.greeter
 
-package object service {
+import io.ontherocks.cbgrpc.protocol.greeter.ToBeGreeted
+import org.scalatest.{ AsyncWordSpec, Matchers }
 
-  type Traversable[+A] = scala.collection.immutable.Traversable[A]
-  type Iterable[+A]    = scala.collection.immutable.Iterable[A]
-  type Seq[+A]         = scala.collection.immutable.Seq[A]
-  type IndexedSeq[+A]  = scala.collection.immutable.IndexedSeq[A]
+class GreeterSpec extends AsyncWordSpec with Matchers {
+
+  val greeterService = new GreeterService()
+
+  "Greeter service" should {
+    "return a greeting for the given person" in {
+      val personName = "Bob"
+      val result     = greeterService.sayHello(ToBeGreeted(Some(personName)))
+      result.map { greeting =>
+        greeting.message shouldEqual s"Hello $personName!"
+      }
+    }
+  }
 
 }

@@ -1,8 +1,8 @@
-# advanced-grpc-scala #
+# cookbook-grpc-scala #
 
-[![Build Status](https://travis-ci.org/pbvie/advanced-grpc-scala.svg?branch=master)](https://travis-ci.org/pbvie/advanced-grpc-scala)
+[![Build Status](https://travis-ci.org/pbvie/cookbook-grpc-scala.svg?branch=master)](https://travis-ci.org/pbvie/cookbook-grpc-scala)
 
-Welcome to advanced-grpc-scala!
+Welcome to cookbook-grpc-scala!
 
 ## Contribution policy ##
 

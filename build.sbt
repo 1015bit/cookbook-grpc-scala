@@ -2,11 +2,11 @@
 // Projects
 // *****************************************************************************
 
-lazy val `advanced-grpc-scala-client` =
+lazy val `cookbook-grpc-scala-client` =
   project
       .in(file("client"))
       .enablePlugins(AutomateHeaderPlugin, GitVersioning)
-      .dependsOn(`advanced-grpc-scala-protocol`)
+      .dependsOn(`cookbook-grpc-scala-protocol`)
       .settings(settings)
       .settings(
         libraryDependencies ++= Seq(
@@ -18,10 +18,10 @@ lazy val `advanced-grpc-scala-client` =
           library.scalaCheck % Test,
           library.scalaTest  % Test
         ),
-        addCommandAlias("run-greeter-client", ";advanced-grpc-scala-client/runMain io.ontherocks.advancedgrpc.client.greeter.GreeterApp")
+        addCommandAlias("run-greeter-client", ";cookbook-grpc-scala-client/runMain io.ontherocks.cookbookgrpc.client.greeter.GreeterApp")
       )
 
-lazy val `advanced-grpc-scala-protocol` =
+lazy val `cookbook-grpc-scala-protocol` =
   project
       .in(file("protocol"))
       .enablePlugins(AutomateHeaderPlugin, GitVersioning)
@@ -37,11 +37,11 @@ lazy val `advanced-grpc-scala-protocol` =
         )
       )
 
-lazy val `advanced-grpc-scala-service` =
+lazy val `cookbook-grpc-scala-service` =
   project
       .in(file("service"))
       .enablePlugins(AutomateHeaderPlugin, GitVersioning, JavaAppPackaging, AshScriptPlugin)
-      .dependsOn(`advanced-grpc-scala-protocol`)
+      .dependsOn(`cookbook-grpc-scala-protocol`)
       .settings(settings)
       .settings(dockerSettings)
       .settings(
@@ -54,19 +54,19 @@ lazy val `advanced-grpc-scala-service` =
           library.scalaCheck % Test,
           library.scalaTest  % Test
         ),
-        mainClass in Compile := Some("io.ontherocks.advancedgrpc.service.Main"),
+        mainClass in Compile := Some("io.ontherocks.cbgrpc.service.Main"),
         version in Docker    := "0.0.1",
-        addCommandAlias("run-services", ";advanced-grpc-scala-service/run"
+        addCommandAlias("run-services", ";cookbook-grpc-scala-service/run"
         )
       )
 
-lazy val `advanced-grpc-scala` =
+lazy val `cookbook-grpc-scala` =
   project
     .in(file("."))
     .aggregate(
-      `advanced-grpc-scala-client`, 
-      `advanced-grpc-scala-protocol`, 
-      `advanced-grpc-scala-service`
+      `cookbook-grpc-scala-client`,
+      `cookbook-grpc-scala-protocol`,
+      `cookbook-grpc-scala-service`
       )
 
 // *****************************************************************************

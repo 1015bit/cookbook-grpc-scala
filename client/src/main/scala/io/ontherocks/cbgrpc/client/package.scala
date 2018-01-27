@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.ontherocks.advancedgrpc
+package io.ontherocks.cbgrpc
 
 package object client {
 
