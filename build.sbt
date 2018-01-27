@@ -18,7 +18,7 @@ lazy val `advanced-grpc-scala-client` =
           library.scalaCheck % Test,
           library.scalaTest  % Test
         ),
-        addCommandAlias("run-greeter-client", ";project advanced-grpc-scala-client;runMain io.ontherocks.advancedgrpc.client.greeter.GreeterApp")
+        addCommandAlias("run-greeter-client", ";advanced-grpc-scala-client/runMain io.ontherocks.advancedgrpc.client.greeter.GreeterApp")
       )
 
 lazy val `advanced-grpc-scala-protocol` =
@@ -56,7 +56,7 @@ lazy val `advanced-grpc-scala-service` =
         ),
         mainClass in Compile := Some("io.ontherocks.advancedgrpc.service.Main"),
         version in Docker    := "0.0.1",
-        addCommandAlias("run-services", ";project advanced-grpc-scala-service;run"
+        addCommandAlias("run-services", ";advanced-grpc-scala-service/run"
         )
       )
 
@@ -77,11 +77,11 @@ import com.trueaccord.scalapb.compiler.{ Version => VersionPb }
 lazy val library =
   new {
     object Version {
-      val cats        = "1.0.0-RC1"
-      val log4j2      = "2.9.1"
+      val cats        = "1.0.1"
+      val log4j2      = "2.10.0"
       val log4j2Scala = "11.0"
-      val monix       = "2.3.0"
-      val pureconfig  = "0.8.0"
+      val monix       = "2.3.3"
+      val pureconfig  = "0.9.0"
       val scalaCheck  = "1.13.5"
       val scalaTest   = "3.0.4"
     }
