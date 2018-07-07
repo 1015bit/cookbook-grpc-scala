@@ -11,7 +11,8 @@ lazy val `cookbook-grpc-scala-client` =
       .settings(
         libraryDependencies ++= Seq(
           library.cats,
-          library.log4j2,
+          library.log4j2Api,
+          library.log4j2Core,
           library.log4j2Scala,
           library.monix,
           library.pureConfig,
@@ -47,7 +48,8 @@ lazy val `cookbook-grpc-scala-service` =
       .settings(
         libraryDependencies ++= Seq(
           library.cats,
-          library.log4j2,
+          library.log4j2Api,
+          library.log4j2Core,
           library.log4j2Scala,
           library.monix,
           library.pureConfig,
@@ -73,27 +75,29 @@ lazy val `cookbook-grpc-scala` =
 // Library dependencies
 // *****************************************************************************
 
-import com.trueaccord.scalapb.compiler.{ Version => VersionPb }
 lazy val library =
   new {
+    import scalapb.compiler.Version.grpcJavaVersion
+    import scalapb.compiler.Version.scalapbVersion
     object Version {
-      val cats        = "1.0.1"
-      val log4j2      = "2.10.0"
+      val cats        = "1.1.0"
+      val log4j2      = "2.11.0"
       val log4j2Scala = "11.0"
       val monix       = "2.3.3"
-      val pureconfig  = "0.9.0"
-      val scalaCheck  = "1.13.5"
-      val scalaTest   = "3.0.4"
+      val pureconfig  = "0.9.1"
+      val scalaCheck  = "1.14.0"
+      val scalaTest   = "3.0.5"
     }
     val cats               = "org.typelevel"             %% "cats-core"             % Version.cats
-    val grpcNetty          = "io.grpc"                    % "grpc-netty"            % VersionPb.grpcJavaVersion
-    val log4j2             = "org.apache.logging.log4j"   % "log4j-core"            % Version.log4j2
+    val grpcNetty          = "io.grpc"                    % "grpc-netty"            % grpcJavaVersion
+    val log4j2Api          = "org.apache.logging.log4j"   % "log4j-api"             % Version.log4j2
+    val log4j2Core         = "org.apache.logging.log4j"   % "log4j-core"            % Version.log4j2 % Runtime
     val log4j2Scala        = "org.apache.logging.log4j"   % "log4j-api-scala_2.12"  % Version.log4j2Scala
     val monix              = "io.monix"                  %% "monix"                 % Version.monix
     val pureConfig         = "com.github.pureconfig"     %% "pureconfig"            % Version.pureconfig
     val scalaCheck         = "org.scalacheck"            %% "scalacheck"            % Version.scalaCheck
-    val scalaPbRuntime     = "com.trueaccord.scalapb"    %% "scalapb-runtime"       % VersionPb.scalapbVersion % "protobuf"
-    val scalaPbRuntimeGrpc = "com.trueaccord.scalapb"    %% "scalapb-runtime-grpc"  % VersionPb.scalapbVersion
+    val scalaPbRuntime     = "com.thesamet.scalapb"      %% "scalapb-runtime"       % scalapbVersion % "protobuf"
+    val scalaPbRuntimeGrpc = "com.thesamet.scalapb"      %% "scalapb-runtime-grpc"  % scalapbVersion
     val scalaTest          = "org.scalatest"             %% "scalatest"             % Version.scalaTest
   }
 
@@ -144,12 +148,12 @@ lazy val gitSettings =
   )
 
 lazy val scalaPbSettings = Seq(
-  PB.targets in Compile := Seq(scalapb.gen() -> (sourceManaged in Compile).value)
+  PB.targets in Compile := Seq(
+    scalapb.gen() -> (sourceManaged in Compile).value
+  )
 )
 
 lazy val scalafmtSettings =
   Seq(
     scalafmtOnCompile := true,
-    scalafmtOnCompile.in(Sbt) := false,
-    scalafmtVersion := "1.3.0"
   )

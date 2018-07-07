@@ -23,7 +23,7 @@ trait DemoApp {
   def managedChannel(config: ClientConfiguration) =
     ManagedChannelBuilder
       .forAddress(config.host, config.port)
-      .usePlaintext(true) // don't use encryption (for demo purposes)
+      .usePlaintext() // don't use a secure connection (for demo purposes)
       .build
 
 }
